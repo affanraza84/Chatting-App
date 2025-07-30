@@ -7,7 +7,7 @@ const connectDB = async () => {
     socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
     family: 4, // Use IPv4, skip IPv6
     retryWrites: true,
-    retryReads: true
+    retryReads: true,
   });
   
   console.log(`MongoDB Connected: ${conn.connection.host}`);

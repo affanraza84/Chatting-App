@@ -58,9 +58,14 @@ const corsOptions = {
   allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
 };
 
+
 app.use(cors({
-  origin: ['https://chatting-app-h118.vercel.app/login'],
+  origin: [
+    'https://chatting-app-h118.vercel.app/login',
+    'http://localhost:5173' // For testing
+  ],
   credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
 }));
 
 app.use(express.json({ limit: '10mb' }));

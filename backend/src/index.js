@@ -23,8 +23,8 @@ const corsOptions = {
     if (!origin) return callback(null, true);
 
     const allowedOrigins = [
+      'https://chatting-app-h118.vercel.app/login',
       'http://localhost:5173',
-      'https://chatting-app-one-alpha.vercel.app/login',
       // /^https:\/\/.*\.devshashi\.dev$/,
       // Add your production frontend URLs here
       process.env.FRONTEND_URL,

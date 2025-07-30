@@ -17,25 +17,21 @@ const __dirname = path.resolve();
 
 
 // CORS configuration
+const allowedOrigins = [
+  'http://localhost:5173', // Local development
+  'https://chatting-app-h118.vercel.app', // Base domain without /login
+  process.env.FRONTEND_URL,
+  /^https:\/\/chatting-app-h118-.*\.vercel\.app$/, // Vercel preview deployments
+  /^https:\/\/.*\.onrender\.com$/,
+  /^https:\/\/.*\.netlify\.app$/
+].filter(Boolean);
+
 const corsOptions = {
   origin: function (origin, callback) {
     // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
 
-    const allowedOrigins = [
-      'https://chatting-app-h118.vercel.app/login',
-      'http://localhost:5173',
-      // /^https:\/\/.*\.devshashi\.dev$/,
-      // Add your production frontend URLs here
-      process.env.FRONTEND_URL,
-      // Allow Render preview URLs
-      /^https:\/\/.*\.onrender\.com$/,
-      // Allow Vercel URLs
-      /^https:\/\/.*\.vercel\.app$/,
-      // Allow Netlify URLs
-      /^https:\/\/.*\.netlify\.app$/
-    ].filter(Boolean);
-
+    // Check against allowed origins
     const isAllowed = allowedOrigins.some(allowedOrigin => {
       if (typeof allowedOrigin === 'string') {
         return origin === allowedOrigin;
@@ -55,18 +51,12 @@ const corsOptions = {
   },
   credentials: true,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie']
+  allowedHeaders: ['Content-Type', 'Authorization', 'Cookie', 'x-auth-token'],
+  exposedHeaders: ['set-cookie']
 };
 
-
-app.use(cors({
-  origin: [
-    'https://chatting-app-h118.vercel.app/login',
-    'http://localhost:5173' // For testing
-  ],
-  credentials: true,
-  methods: ['GET', 'POST', 'PUT', 'DELETE']
-}));
+// Apply it ONCE in your application
+app.use(cors(corsOptions));
 
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));

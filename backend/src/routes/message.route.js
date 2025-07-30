@@ -25,7 +25,7 @@ const validateObjectId = (req, res, next) => {
 
 // Routes
 router.get('/users', protectRoute, getUsersForSidebar);
-router.get('/:id', protectRoute, validateObjectId, getMessages);
-router.post('/send/:id', protectRoute, validateObjectId, sendMessages);
+router.get('/:id', protectRoute, getMessages);
+router.post('/send/:id', protectRoute, sendMessages);
 
 export default router;

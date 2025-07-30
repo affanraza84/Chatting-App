@@ -24,10 +24,8 @@ const corsOptions = {
 
     const allowedOrigins = [
       'http://localhost:5173',
-      'http://localhost:5174',
-      'http://localhost:3000',
-      'https://devshashi.dev',
-      /^https:\/\/.*\.devshashi\.dev$/,
+      'https://chatting-app-one-alpha.vercel.app/login',
+      // /^https:\/\/.*\.devshashi\.dev$/,
       // Add your production frontend URLs here
       process.env.FRONTEND_URL,
       // Allow Render preview URLs

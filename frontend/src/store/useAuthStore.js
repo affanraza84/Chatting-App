@@ -7,7 +7,7 @@ const BASE_URL = (() => {
   if (import.meta.env.MODE === "development") {
     return import.meta.env.VITE_API_URL || "http://localhost:5001";
   }
-  return import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL || "https://chatty-backend-hap2.onrender.com";
+  return import.meta.env.VITE_SOCKET_URL || import.meta.env.VITE_API_URL
 })();
 
 export const useAuthStore = create((set, get) => ({

@@ -1,23 +1,22 @@
 import mongoose from 'mongoose';
 
 const connectDB = async () => {
-  const conn = await mongoose.connect(process.env.MONGO_URI, {
-    serverSelectionTimeoutMS: 5000,
-    maxPoolSize: 10,
-    socketTimeoutMS: 45000, // Close sockets after 45s of inactivity
-    family: 4, // Use IPv4, skip IPv6
-    retryWrites: true,
-    retryReads: true,
-  });
-  
-  console.log(`MongoDB Connected: ${conn.connection.host}`);
-  return conn;
+  try {
+    await mongoose.connect(process.env.MONGO_URI, {
+      // Remove sslValidate completely
+      ssl: true, // Keep this for TLS/SSL connections
+      tlsAllowInvalidCertificates: false, // Important for production
+      authMechanism: 'SCRAM-SHA-256', // Modern authentication
+      retryWrites: true,
+      retryReads: true,
+      serverSelectionTimeoutMS: 5000,
+      socketTimeoutMS: 30000
+    });
+    console.log('✅ MongoDB connected successfully');
+  } catch (error) {
+    console.error('❌ MongoDB connection failed:', error.message);
+    process.exit(1);
+  }
 };
-
-// Handle shutdown gracefully
-process.on('SIGINT', async () => {
-  await mongoose.connection.close();
-  process.exit(0);
-});
 
 export default connectDB;

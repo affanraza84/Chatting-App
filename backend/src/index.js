@@ -8,7 +8,16 @@ import cors from 'cors'
 import { app, server } from './lib/socket.js'
 
 dotenv.config();
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT || 5001;
+
+// Health Check
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    message: 'Server is running',
+    timestamp: new Date().toISOString()
+  });
+});
 
 // Connect to MongoDB
 connectDB();
@@ -62,14 +71,6 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/message', messageRoutes);
 
-// Health Check
-app.get('/health', (req, res) => {
-  res.status(200).json({
-    status: 'OK',
-    message: 'Server is running',
-    timestamp: new Date().toISOString()
-  });
-});
 
 // API 404 Handler
 app.use('/api/*', (req, res) => {

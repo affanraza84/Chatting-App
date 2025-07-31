@@ -11,7 +11,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api': {
-        target: 'https://chatty-backend-hap2.onrender.com',
+        target: 'http://localhost:4000',
         changeOrigin: true,
         secure: true
       }

@@ -6,39 +6,31 @@ import cookieParser from 'cookie-parser'
 import messageRoutes from './routes/message.route.js'
 import cors from 'cors'
 import { app, server } from './lib/socket.js'
-import path from 'path'
 
 dotenv.config();
-
 const PORT = process.env.PORT || 4000;
+
+// Connect to MongoDB
 connectDB();
-
-const __dirname = path.resolve();
-
 
 // CORS configuration
 const allowedOrigins = [
-  'http://localhost:5173', // Local development
-  'https://chatting-app-h118.vercel.app', // Base domain without /login
+  'http://localhost:5173', // ✅ Vite dev server
+  'http://localhost:3000', // if using React's dev server
+  'http://127.0.0.1:5173', // sometimes browsers use 127.0.0.1
   process.env.FRONTEND_URL,
-  /^https:\/\/chatting-app-h118-.*\.vercel\.app$/, // Vercel preview deployments
+  /^https:\/\/chatting-app-h118-.*\.vercel\.app$/,
   /^https:\/\/.*\.onrender\.com$/,
   /^https:\/\/.*\.netlify\.app$/
 ].filter(Boolean);
 
 const corsOptions = {
   origin: function (origin, callback) {
-    // Allow requests with no origin (like mobile apps or curl requests)
     if (!origin) return callback(null, true);
 
-    // Check against allowed origins
     const isAllowed = allowedOrigins.some(allowedOrigin => {
-      if (typeof allowedOrigin === 'string') {
-        return origin === allowedOrigin;
-      }
-      if (allowedOrigin instanceof RegExp) {
-        return allowedOrigin.test(origin);
-      }
+      if (typeof allowedOrigin === 'string') return origin === allowedOrigin;
+      if (allowedOrigin instanceof RegExp) return allowedOrigin.test(origin);
       return false;
     });
 
@@ -55,14 +47,12 @@ const corsOptions = {
   exposedHeaders: ['set-cookie']
 };
 
-// Apply it ONCE in your application
 app.use(cors(corsOptions));
-
 app.use(express.json({ limit: '10mb' }));
 app.use(express.urlencoded({ limit: '10mb', extended: true }));
 app.use(cookieParser());
 
-// Request logging middleware
+// Log every request
 app.use((req, res, next) => {
   console.log(`[SERVER] 📥 ${req.method} ${req.path} - ${new Date().toISOString()}`);
   next();
@@ -72,7 +62,7 @@ app.use((req, res, next) => {
 app.use('/api/auth', authRoutes);
 app.use('/api/message', messageRoutes);
 
-// Health check endpoint
+// Health Check
 app.get('/health', (req, res) => {
   res.status(200).json({
     status: 'OK',
@@ -81,7 +71,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-// API 404 handler - must come before static files
+// API 404 Handler
 app.use('/api/*', (req, res) => {
   res.status(404).json({
     success: false,
@@ -90,12 +80,11 @@ app.use('/api/*', (req, res) => {
   });
 });
 
-// Global error handler
+// Global Error Handler
 app.use((error, req, res, next) => {
   console.error(`[SERVER] ❌ Global error handler:`, error.message);
   console.error(`[SERVER] Stack trace:`, error.stack);
 
-  // Handle specific error types
   if (error.name === 'ValidationError') {
     return res.status(400).json({
       success: false,
@@ -112,7 +101,6 @@ app.use((error, req, res, next) => {
     });
   }
 
-  // Default error response
   res.status(500).json({
     success: false,
     message: 'Internal server error',
@@ -120,7 +108,7 @@ app.use((error, req, res, next) => {
   });
 });
 
-// Final 404 handler - only for development
+// Final catch-all route for non-API paths (only for dev)
 if (process.env.NODE_ENV !== 'production') {
   app.use((req, res) => {
     console.log(`[SERVER] ⚠️ 404 - Route not found: ${req.method} ${req.originalUrl}`);
@@ -132,6 +120,7 @@ if (process.env.NODE_ENV !== 'production') {
   });
 }
 
+// Start server
 server.listen(PORT, () => {
   console.log(`[SERVER] 🚀 Server started on port ${PORT}`);
   console.log(`[SERVER] 🌍 Environment: ${process.env.NODE_ENV || 'development'}`);

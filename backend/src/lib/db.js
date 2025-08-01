@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 
 const connectDB = async () => {
-  const conn = await mongoose.connect(process.env.MONGO_URI, {
+  const conn = await mongoose.connect(process.env.MONGO_URI + '/chatty', {
     serverSelectionTimeoutMS: 5000,
     maxPoolSize: 10,
     socketTimeoutMS: 45000, // Close sockets after 45s of inactivity

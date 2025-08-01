@@ -4,7 +4,7 @@ const EnvDebugger = () => {
   const [isVisible, setIsVisible] = useState(false);
 
   if (import.meta.env.MODE === 'development') {
-    return null; // Only show in production
+    return null; 
   }
 
   const envVars = {

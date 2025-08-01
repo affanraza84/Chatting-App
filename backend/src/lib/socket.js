@@ -13,7 +13,7 @@ const allowedOrigins = [
   'http://localhost:3000',
   
   // Production URLs (replace with your actual URLs)
-  'https://chatting-app-smoky-zeta.vercel.app',       // Your Vercel frontend
+  process.env.FRONTEND_URL,       // Your Vercel frontend
   'https://chatty-backend-hap2.onrender.com',      // Your Render backend (for API calls)
   
   // Pattern matching for preview deployments
